@@ -1,5 +1,5 @@
-import { input_search,analysez, regex_nom, error_msg, search_for, Rchercher } from "./dom.js";
-import { input_value } from "./main.js";
+import { input_search,analysez, regex_nom, error_msg, search_for, Rchercher, all } from "./dom.js";
+const input_value = sessionStorage.getItem("username") || "";
 async function response(user){
     try{
         const res = await fetch(`https://api.github.com/users/${user}`)
@@ -15,50 +15,30 @@ async function response(user){
         return false
     }
 }
-let user_info = null;
-function search(){
-    search_for.value = input_value;
-    Rchercher.addEventListener("click", async function(){
-            const result = await response(input_value)
-            if(result)
-            {
-                user_info = result 
-            }
-            else
-            {
-                return false;
-            }
-        })
-    }
-search();
 function add(user_info){
-if(!user_info)
-{
-    console.log("error")
-    return
-}
-if(user_info.bio === null)
-{
-    user_info.bio = "cyber securiry"
-}
+    all.classList.add("hidden")
+     if(!user_info){
+        all.classList.remove("hidden")
+        all.innerHTML = `<p class="text-red-500">Utilisateur introuvable</p>`
+        return
+    }
+const bio = user_info.bio ?? "cyber security"
+const location = user_info.location ?? "Non renseigné"
 const date = new Date(user_info.created_at);
 const month = date.toLocaleString("fr-FR", { month: "long" });
 const year = date.getFullYear();
 const member = `Member depuis ${month} ${year}`;
-
-const cart = document.creatElement("div")
-card.className = "w-1/3 border border-slate-700 rounded-xl text-white p-5 bg-slate-900"
-cart.innerHTML = `
+all.innerHTML = `
 <div class="flex flex-col items-center gap-2 mb-5">
             <img class="border-2 border-slate-600 rounded-full w-40 h-40 object-cover"
                 src="${user_info.avatar_url}" alt="github profil">
-            <a href="#" class="text-xl font-semibold hover:text-blue-400 text-blue-500">${user_info.url}</a>
-            <p class="domain text-slate-400">${user_info.bio}</p>
+            <a href="${user_info.url}" class="text-xl font-semibold hover:text-blue-400 text-blue-500">@${user_info.login}</a>
+            <p class="domain text-slate-400">${bio}</p>
         </div>
         <div class="border border-slate-700 bg-slate-800 rounded-lg p-3 space-y-3 mb-5">
             <p>
                 <i class="fa-solid fa-map-pin text-red-500 mr-2"></i>
-                ${user_info.location}
+                ${location}
             </p>
             <p>
                 <i class="fa-solid fa-calendar text-blue-400 mr-2"></i> ${member}
@@ -83,7 +63,7 @@ cart.innerHTML = `
             </div>
 
         </div>   
-        <a href="#"  class="w-full border rounded-lg p-3 bg-gradient-to-r from-blue-400 via-blue-300 to-pink-400 text-slate-900 font-semibold hover:opacity-90 mb-3">
+        <a href="#"  class="block text-center w-full border rounded-lg p-3 bg-gradient-to-r from-blue-400 via-blue-300 to-pink-400 text-slate-900 font-semibold hover:opacity-90 mb-3">
             <i class="fa-regular fa-star mr-2"></i>
             Ajouter à la shortlist
         </a>
@@ -94,5 +74,15 @@ cart.innerHTML = `
                 <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
             </a>
         </div>`
-        all.append(cart);
 }
+search_for.value = input_value;
+
+if (input_value) {
+    const user = await response(input_value)
+    add(user)
+}
+        Rchercher.addEventListener("click", async function(){
+            const result = await response(search_for.value.trim())
+            add(result)
+            all.classList.remove("hidden")
+        })
