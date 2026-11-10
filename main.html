@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gradient-to-r from-[#0f172a] via-[#273449] to-[#312e81] p-4">
+  <header>
+    <div class="flex items-center justify-between gap-1 border p-2 bg-slate-500 rounded-md px-8 py-3 bg-gradient-to-r from-slate-400 via-slate-400/50 to-slate-500">
+        <div class="flex items-center gap-2">
+            <span class="text-4xl text-blue-400 leading-none drop-shadow-[0_0_6px_rgba(239,68,68,1)]">•</span>
+            <h1 class="font-semibold text-lg mt-auto font-semibold text-white">DevScop</h1>
+        </div >
+        <div class="flex items-center gap-7 text-white">
+            <a href="#" class="font-semibold text-lg font-semibold hover:text-yellow-500 ">Recherche</a>
+            <a href="#" class="font-semibold text-lg font-semibold hover:text-yellow-500 ">Shortlist</a>
+            </div>
+            </div>
+    </header>
+    <main>
+    <div class="text-6xl p-20 font-semibold  text-white text-center max-h-70">
+        <h1>Trouvez les meilleurs</h1>
+        <h1>développeurs gráce á <span class="text-blue-400">leur</span></h1>
+        <h1 class=" inline-block bg-gradient-to-r from-pink-500 via-blue-400 to-slate-400 bg-clip-text text-transparent">code</h1>
+    </div>
+    <div class="text-center text-2xl  text-white">
+        <h1>Analysez un <span class="bg-gradient-to-r from-blue-500 via-blue-300 to-white bg-clip-text text-transparent">profil</span> ses <span class="bg-gradient-to-r from-yellow-500 via-yellow-300 to-white bg-clip-text text-transparent">project</span> et ses <span class="bg-gradient-to-r from-pink-500 via-pink-300 to-white bg-clip-text text-transparent">langages</span> en</h1>
+        <h1>quelques secondes.</h1>
+    </div>
+
+    
+<div class="flex w-3/4 mx-auto border p-4 bg-gradient-to-r from-slate-400 via-slate-300 to-slate-200 rounded-md my-4 gap-3" >
+    <div class="flex items-center flex-1 min-w-0 gap-3">
+     <i class="fa-solid fa-magnifying-glass text-blue-500  leading-none drop-shadow-[0_0_8px_#f472b6]"></i>
+     <input  type="text" name="search" id="search" placeholder="entrez un nome d'utilisateur..." required class="w-full h-10 px-3 bg-slate-900 text-white border border-slate-600 rounded-md outline-none focus:border-green-500">
+     </div> 
+     <div class="flex items-center rounded-md bg-gradient-to-r from-blue-400 via-blue-300 to-pink-400 "><button class=" cursor-pinter p-2 cursor-pointer" id="analysez">Analysez</button>
+      <span><i class="fa-solid fa-arrow-right"></i></span></div>
+    </div>
+    <p class="hidden text-red-500" id="error_msg"></p>
+</main>
+
+</body>
+<script type="module" src="main.js"></script>
+</html>

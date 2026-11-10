@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>Document</title>
+</head>
+<body class="bg-gradient-to-r from-[#0f172a] via-[#273449] to-[#312e81] p-4">
+    <header>
+    <div class="flex items-center justify-between gap-1 border p-2 bg-slate-500 rounded-md px-8 py-3 bg-gradient-to-r from-slate-400 via-slate-400/50 to-slate-500">
+        <div class="flex items-center gap-2">
+            <span class="text-4xl text-blue-400 leading-none drop-shadow-[0_0_6px_rgba(239,68,68,1)]">•</span>
+            <h1 class="font-semibold text-lg mt-auto font-semibold text-white">DevScop</h1>
+        </div >
+        <div class="flex items-center gap-7 text-white">
+            <a href="#" class="font-semibold text-lg font-semibold hover:text-yellow-500 ">Recherche</a>
+            <a href="#" class="font-semibold text-lg font-semibold hover:text-yellow-500 ">Shortlist</a>
+            </div>
+            </div>
+    </header>
+    <main>
+    <div class="flex w-3/4 mx-auto border p-4 bg-gradient-to-r from-slate-400 via-slate-300 to-slate-200 rounded-md my-4 gap-3" >
+    <div class="flex items-center flex-1 min-w-0 gap-3">
+     <i class="fa-solid fa-magnifying-glass text-blue-500  leading-none drop-shadow-[0_0_8px_#f472b6]"></i>
+     <input  type="text" name="search" id="search_for" placeholder="entrez un nome d'utilisateur..." required class="w-full h-10 px-3 bg-slate-900 text-white border border-slate-600 rounded-md outline-none focus:border-green-500">
+     </div> 
+     <div class="flex items-center rounded-md bg-gradient-to-r from-blue-400 via-blue-300 to-red-500/20 "><button class=" cursor-pinter p-2 cursor-pointer" id="Rechercher">Rechercher</button>
+     </div>
+    </div>
+
+<section class="flex gap-10 p-6 items-start">
+    <div class=" all w-1/3 border border-slate-700 rounded-xl text-white p-5 bg-slate-900">
+    </div>
+
+<div class="flex-1 min-w-0 text-white">
+    <h1 class="text-3xl font-bold text-blue-500 mb-5">
+        DEPOTS <span class="text-white">64</span>
+    </h1>
+    <div class="grid grid-cols-2 md:grid-cols-2 gap-5 w-full">
+        <div class="border border-slate-700 rounded-lg p-5 space-y-4 w-full hover:border-blue-500">
+            <h1 class="text-2xl">
+                <i class="fa-brands fa-github"></i>
+                test_workflow
+            </h1>
+            <p class="text-slate-400">Aucune description</p>
+            <div class="flex items-center gap-4">
+                <span class="flex items-center gap-2">
+                    <span class="inline-block w-2 h-2 rounded-full bg-orange-500"></span>
+                    HTML
+                </span>
+                <span>
+                    <i class="fa-solid fa-star text-yellow-500"></i> 0
+                </span>
+                <span>
+                    <i class="fa-solid fa-code-fork"></i> 0
+                </span>
+            </div>
+            <p class="text-slate-400 text-sm">
+                Mis à jour il y a 30 jours
+            </p>
+        </div>
+    </div>
+</div>
+
+</section>
+    </main>
+    
+</body>
+<script type="module" src="main.js"></script>
+</html>
