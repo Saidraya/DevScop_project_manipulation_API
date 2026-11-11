@@ -1,8 +1,8 @@
-import { input_search,analysez, regex_nom, error_msg, search_for, Rchercher, all } from "./dom.js";
+import { input_search,analysez, regex_nom, error_msg, search_for, Rchercher, all, all_repos } from "./dom.js";
 const input_value = sessionStorage.getItem("username") || "";
-async function response(user){
+async function response(link_url){
     try{
-        const res = await fetch(`https://api.github.com/users/${user}`)
+        const res = await fetch(link_url)
          if(!res.ok)
         {  
             return false
@@ -32,7 +32,7 @@ all.innerHTML = `
 <div class="flex flex-col items-center gap-2 mb-5">
             <img class="border-2 border-slate-600 rounded-full w-40 h-40 object-cover"
                 src="${user_info.avatar_url}" alt="github profil">
-            <a href="${user_info.url}" class="text-xl font-semibold hover:text-blue-400 text-blue-500">@${user_info.login}</a>
+            <a href="${user_info.html_url}" class="text-xl font-semibold hover:text-blue-400 text-blue-500">@${user_info.login}</a>
             <p class="domain text-slate-400">${bio}</p>
         </div>
         <div class="border border-slate-700 bg-slate-800 rounded-lg p-3 space-y-3 mb-5">
@@ -69,20 +69,81 @@ all.innerHTML = `
         </a>
 
         <div class="text-center border border-slate-700 bg-slate-800 rounded-lg p-3">
-            <a href="https://api.github.com/users/octocat" class="hover:text-blue-400 text-cyan-400">
+            <a href="${user_info.html_url}" class="hover:text-blue-400 text-cyan-400">
                 Voir le profil original
                 <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
             </a>
         </div>`
+        all.classList.remove("hidden");
 }
 search_for.value = input_value;
 
 if (input_value) {
-    const user = await response(input_value)
+
+    const user = await response(`https://api.github.com/users/${input_value}`)
     add(user)
 }
-        Rchercher.addEventListener("click", async function(){
-            const result = await response(search_for.value.trim())
+const depos = document.createElement("div");
+const grid = document.createElement("div");
+
+grid.className = "grid grid-cols-2 md:grid-cols-2 gap-5 w-full";
+
+all_repos.append(depos, grid);
+function add_repos(data)
+{
+    const card = document.createElement("div");
+    const description = data.description ?? "aucun description";
+    
+     card.className = "flex-1 min-w-0 text-white";
+    card.innerHTML = ` 
+    <div class="">
+        <div class="border border-slate-700 rounded-lg p-5 space-y-4 w-full hover:border-blue-500">
+            <h1 class="text-2xl">
+                <i class="fa-brands fa-github"></i>${data.name} 
+            </h1>
+            <p class="text-slate-400">${description} </p>
+            <div class="flex items-center gap-4">
+                <span class="flex items-center gap-2">
+                    <span class="inline-block w-2 h-2 rounded-full bg-orange-500"></span>${data.language} 
+                </span>
+                <span>
+                    <i class="fa-solid fa-star text-yellow-500"></i>${data.stargazers_count} 
+                </span>
+                <span>
+                    <i class="fa-solid fa-code-fork"></i>${data.forks_count}
+                </span>
+            </div>
+            <p class="text-slate-400 text-sm">
+                ${data.updated_at}
+            </p>
+        </div>
+    </div>` 
+    grid.append(card)
+
+    
+}Rchercher.addEventListener("click", async function(){
+
+    grid.innerHTML = ""
+            const result = await response(`https://api.github.com/users/${search_for.value.trim()}`)
+            const result_repos  = await response(`https://api.github.com/users/${search_for.value.trim()}/repos`)
+            
+            if (Array.isArray(result_repos)) {
+                depos.innerHTML = `<h1 class="text-3xl font-bold text-blue-500 mb-5">DEPOTS <span class="text-white">${result_repos.length}</span></h1>`;
+                const length = result_repos.length
+                for (const repo of result_repos) {
+                    add_repos(repo, length);
+                }
+            }
             add(result)
-            all.classList.remove("hidden")
         })
+        if (input_value) {
+    const user = await response(`https://api.github.com/users/${input_value}/repos`);
+    if (Array.isArray(user)) {
+                depos.innerHTML = `<h1 class="text-3xl font-bold text-blue-500 mb-5">DEPOTS <span class="text-white">${user.length}</span></h1>`;
+                for (const repo of user) {
+                    add_repos(repo);
+                }
+            }
+    
+}
+
