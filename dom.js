@@ -8,3 +8,6 @@ export const search_for = document.querySelector("#search_for")
 export const Rchercher = document.querySelector("#Rechercher")
 export const all_repos = document.querySelector(".all_repos")
 
+export const all_list = document.querySelector("#all_list")
+export const aucun = document.querySelector("#popup-match")
+export const search = document.querySelector("#search_")

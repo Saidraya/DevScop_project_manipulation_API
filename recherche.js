@@ -1,6 +1,6 @@
-import { input_search,analysez, regex_nom, error_msg, search_for, Rchercher, all, all_repos } from "./dom.js";
+import { input_search,analysez, regex_nom, error_msg, search_for, Rchercher, all, all_repos, aucun } from "./dom.js";
 const input_value = sessionStorage.getItem("username") || "";
-async function response(link_url){
+export async function response(link_url){
     try{
         const res = await fetch(link_url)
          if(!res.ok)
@@ -18,8 +18,10 @@ async function response(link_url){
 function add(user_info){
     all.classList.add("hidden")
      if(!user_info){
-        all.classList.remove("hidden")
-        all.innerHTML = `<p class="text-red-500">Utilisateur introuvable</p>`
+        all.classList.add("hidden")
+        aucun.classList.remove("hidden")
+        depos.classList.add("hidden")
+
         return
     }
 const bio = user_info.bio ?? "cyber security"
@@ -44,26 +46,21 @@ all.innerHTML = `
                 <i class="fa-solid fa-calendar text-blue-400 mr-2"></i> ${member}
             </p>
         </div>
-
         <div class="grid grid-cols-3 gap-2 text-center mb-5">
-
             <div class="border border-slate-700 rounded-lg p-2">
                 <h1 class="text-xl font-bold text-blue-400 ">${user_info.public_repos}</h1>
                 <p class="text-xs text-slate-400">DEPOTS</p>
             </div>
-
             <div class="border border-slate-700 rounded-lg p-2">
                 <h1 class="text-xl font-bold text-pink-400">${user_info.followers}</h1>
                 <p class="text-xs text-slate-400">ABONNES</p>
             </div>
-
             <div class="border border-slate-700 rounded-lg p-2">
                 <h1 class="text-xl font-bold text-indigo-300">${user_info.following}</h1>
                 <p class="text-xs text-slate-400">ABONNEMENTS</p>
             </div>
-
         </div>   
-        <a href="#"  class="block text-center w-full border rounded-lg p-3 bg-gradient-to-r from-blue-400 via-blue-300 to-pink-400 text-slate-900 font-semibold hover:opacity-90 mb-3">
+        <a href="#"  class="block btn_ajout text-center w-full border rounded-lg p-3 bg-gradient-to-r from-blue-400 via-blue-300 to-pink-400 text-slate-900 font-semibold hover:opacity-90 mb-3">
             <i class="fa-regular fa-star mr-2"></i>
             Ajouter à la shortlist
         </a>
@@ -75,6 +72,11 @@ all.innerHTML = `
             </a>
         </div>`
         all.classList.remove("hidden");
+        const ajout = all.querySelector(".btn_ajout")
+        ajout.onclick = function(){
+            sessionStorage.setItem("user", JSON.stringify(user_info));
+
+        }
 }
 search_for.value = input_value;
 
@@ -91,6 +93,17 @@ grid.className = "grid grid-cols-2 md:grid-cols-2 gap-5 w-full";
 all_repos.append(depos, grid);
 function add_repos(data)
 {
+    
+
+const now = new Date()
+const date = new Date(data.updated_at)
+const days = now - date;
+const last_update = Math.floor(days /(1000 * 60 * 60 * 24))
+
+let member = `mis á jour il y a${last_update} jours`;
+if (last_update === 0) {
+    member = "Mis à jour aujourd'hui";
+}
     const card = document.createElement("div");
     const description = data.description ?? "aucun description";
     
@@ -114,36 +127,33 @@ function add_repos(data)
                 </span>
             </div>
             <p class="text-slate-400 text-sm">
-                ${data.updated_at}
+                ${member}
             </p>
         </div>
     </div>` 
-    grid.append(card)
-
-    
+    grid.append(card)    
 }Rchercher.addEventListener("click", async function(){
-
-    grid.innerHTML = ""
+    grid.innerHTML = "";
             const result = await response(`https://api.github.com/users/${search_for.value.trim()}`)
             const result_repos  = await response(`https://api.github.com/users/${search_for.value.trim()}/repos`)
             
             if (Array.isArray(result_repos)) {
                 depos.innerHTML = `<h1 class="text-3xl font-bold text-blue-500 mb-5">DEPOTS <span class="text-white">${result_repos.length}</span></h1>`;
                 const length = result_repos.length
-                for (const repo of result_repos) {
+                for (const repo of result_repos){
                     add_repos(repo, length);
+                    
                 }
             }
             add(result)
         })
-        if (input_value) {
-    const user = await response(`https://api.github.com/users/${input_value}/repos`);
+        if (input_value){
+ const user = await response(`https://api.github.com/users/${input_value}/repos`);
     if (Array.isArray(user)) {
                 depos.innerHTML = `<h1 class="text-3xl font-bold text-blue-500 mb-5">DEPOTS <span class="text-white">${user.length}</span></h1>`;
                 for (const repo of user) {
                     add_repos(repo);
                 }
             }
-    
 }
 
