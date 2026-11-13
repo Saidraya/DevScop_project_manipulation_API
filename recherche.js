@@ -130,7 +130,8 @@ if (last_update === 0) {
                 ${member}
             </p>
         </div>
-    </div>` 
+    </div>`
+    
     grid.append(card)    
 }Rchercher.addEventListener("click", async function(){
     grid.innerHTML = "";
@@ -156,4 +157,3 @@ if (last_update === 0) {
                 }
             }
 }
-
