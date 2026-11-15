@@ -1,44 +1,65 @@
 # DevScop
 
-Petit site pour analyser le profil GitHub d'un développeur à partir de son nom d'utilisateur.
+Application web pour les recruteurs tech : analyser le profil GitHub d'un développeur, consulter ses dépôts publics et gérer une shortlist de candidats enregistrée sur MockAPI.
 
 ## Fonctionnalités
 
-- Recherche d'un utilisateur GitHub depuis la page d'accueil (avec validation du nom)
-- Affichage de la carte du profil : avatar, nom d'utilisateur, bio, localisation, date d'inscription, nombre de dépôts, abonnés et abonnements
-- Nouvelle recherche directement depuis la page Recherche
-- Message d'erreur si l'utilisateur est introuvable
+### Recherche
+- Recherche d'un utilisateur GitHub depuis l'accueil ou la page Recherche
+- Validation du nom d'utilisateur et message d'erreur
+
+### Profil
+- Carte du profil : avatar, login, bio, localisation, date d'inscription, dépôts, abonnés, abonnements
+- Valeur par défaut quand une information est absente
+- Liste des dépôts : nom, description, langage, étoiles, forks, mise à jour
+- Bouton « Ajouter à la shortlist » sans doublon
+
+### Shortlist
+- Liste des candidats chargée depuis MockAPI
+- Modification du statut, de la note et de la note interne
+- Suppression avec confirmation
+- Filtre par statut et recherche par login
+- Nombre de candidats affiché dans le titre
 
 ## Technologies
 
-- HTML
-- Tailwind CSS (CDN)
-- Font Awesome
-- JavaScript (modules ES)
-- API GitHub : `https://api.github.com/users/{username}`
+- HTML5, Tailwind CSS (CDN), Font Awesome
+- JavaScript (modules ES, async / await, fetch)
+- API GitHub et MockAPI
+- Git, GitHub et Jira
 
-## Structure du projet
+## Structure
 
-- `main.html` / `main.js` : page d'accueil et champ de recherche
-- `recherche.html` / `recherche.js` : résultat de la recherche (appel à l'API et affichage de la carte)
-- `shortlist.html` : page de la shortlist (en cours)
-- `dom.js` : sélecteurs DOM et regex de validation partagés
+```
+├── index.html       # accueil et recherche
+├── recherche.html   # profil et dépôts
+├── shortlist.html   # liste des candidats
+├── main.js          # logique de l'accueil
+├── recherche.js     # appels GitHub, profil et dépôts
+├── shortlist.js     # appels MockAPI, affichage et filtre
+└── dom.js           # sélecteurs DOM partagés
+```
+
+## API utilisées
+
+| Service | Méthode | Usage |
+|---|---|---|
+| GitHub | GET `/users/{username}` | Profil |
+| GitHub | GET `/users/{username}/repos` | Dépôts |
+| MockAPI | GET `/users` | Charger la shortlist |
+| MockAPI | POST `/users` | Ajouter un candidat |
+| MockAPI | PUT `/users/{id}` | Modifier un candidat |
+| MockAPI | DELETE `/users/{id}` | Supprimer un candidat |
 
 ## Lancer le projet
 
 1. Cloner le dépôt
 2. Ouvrir le dossier dans VS Code
-3. Lancer `main.html` avec l'extension **Live Server**
+3. Lancer `index.html` avec **Live Server**
 
-## Fonctionnement
+Version en ligne : <lien-github-pages>
+Tableau Jira : <lien-jira>
 
-1. L'utilisateur saisit un nom dans `main.html`
-2. Le nom est validé, puis enregistré dans `sessionStorage`
-3. `recherche.html` lit ce nom, appelle l'API GitHub et affiche la carte du profil
+## Auteur
 
-## À faire
-
-- [ ] Afficher les vrais dépôts de l'utilisateur (la liste est encore statique)
-- [ ] Bouton « Ajouter à la shortlist » (sauvegarde avec `localStorage`)
-- [ ] Page shortlist : affichage et suppression des candidats
-- [ ] Liens de navigation entre les pages
+**Said Raya**

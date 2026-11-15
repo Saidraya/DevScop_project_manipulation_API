@@ -9,7 +9,7 @@
 </head>
 <body class="bg-gradient-to-r from-[#0f172a] via-[#273449] to-[#312e81] p-4">
       <header>
-    <div class="flex items-center justify-between gap-1 border p-2 bg-slate-500 rounded-md px-8 py-3 bg-gradient-to-r from-slate-400 via-slate-400/50 to-slate-500">
+    <div class="flex flex-wrap items-center justify-between gap-2 border p-2 bg-slate-500 rounded-md px-4 md:px-8 py-3 bg-gradient-to-r from-slate-400 via-slate-400/50 to-slate-500">
         <div class="flex items-center gap-2">
             <span class="text-4xl text-blue-400 leading-none drop-shadow-[0_0_6px_rgba(239,68,68,1)]">•</span>
             <h1 class="font-semibold text-lg mt-auto font-semibold text-white">DevScop</h1>
@@ -22,7 +22,7 @@
     </header>
     <main class="min-h-screen h-auto overflow-visible gap-6 p-6 flex flex-col">
         <h1 class="text-6xl bg-gradient-to-r from-blue-400 via-blue-300 to-white bg-clip-text text-transparent p-4 font-semibold">Ma shortlist</h1>
-        <p class="text-white opacity-50 px-4 text-xl">3 candidat(s) dans votre shortlist</p>
+        <p class="text-white opacity-50 px-4 text-xl" id="count">3 candidat(s) dans votre shortlist</p>
  <div class="w-full flex flex-col md:flex-row items-center justify-between gap-4">
     <div class="max-w-1/2 md:flex-1 min-w-0 border bg-slate-900 text-white rounded-lg p-3">
         <ul class="flex flex-wrap items-center gap-4 md:gap-2 text-lg">
@@ -89,8 +89,78 @@
         Player added successfully
     </p>
 </div>
-    </main>
+   
     
+<div id="modal" class="fixed inset-0 flex items-center justify-center bg-black/60 p-4 hidden">
+
+  <div class="relative w-full max-w-xl rounded-2xl bg-[#0d1220] p-6">
+
+    <button  type="button"
+      class=" cancelBtn absolute right-4 top-4 text-white">
+      X
+    </button>
+
+    <p class="text-sm text-cyan-400">Mise à jour du profil</p>
+
+    <h2 class="mt-2 text-2xl font-bold text-white">
+      Modifier le candidat
+      <span id="candidateName" class="text-pink-400">
+        soufiane boushaba
+      </span>
+    </h2>
+
+    <form id="candidateForm" class="mt-6 space-y-5">
+
+      <div>
+        <label for="status" class="mb-2 block text-white">
+          Statut de recrutement
+        </label>
+
+       <select id="status" name="status" class="w-full rounded-xl bg-slate-800 p-3 text-white">
+  <option value="Nouveau">Nouveau</option>
+  <option value="À contacter">À contacter</option>
+  <option value="Entretien">Entretien</option>
+  <option value="Retenu">Retenu</option>
+  <option value="Refusé">Refusé</option>
+</select>
+      </div>
+
+      <div>
+        <label for="rating" class="mb-2 block text-white">Note</label>
+
+        <select id="rating" name="rating"
+          class="w-full rounded-xl bg-slate-800 p-3 text-white">
+          <option value="1">★☆☆☆☆ 1 / 5</option>
+          <option value="2">★★☆☆☆ 2 / 5</option>
+          <option value="3">★★★☆☆ 3 / 5</option>
+          <option value="4">★★★★☆ 4 / 5</option>
+          <option value="5">★★★★★ 5 / 5</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="note" class="mb-2 block text-white">Note interne</label>
+
+        <textarea id="note" name="note" rows="4"
+          class="w-full rounded-xl bg-slate-800 p-3 text-white">test</textarea>
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <button type="button" 
+          class=" cancelBtn rounded-xl bg-slate-700 px-5 py-3 text-white">
+          Annuler
+        </button>
+
+        <button type="submit"
+          class="rounded-xl bg-green-500 px-5 py-3 font-bold text-black btn_save text-lime-100">
+          Enregistrer
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+   </main>
 </body>
 <script type="module" src="shortlist.js"></script>
 </html>

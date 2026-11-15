@@ -13,7 +13,6 @@ analysez.addEventListener("click", function(){
         {
             error_msg.textContent = "this name not exist...";
             error_msg.classList.remove("hidden")
-            error_msg.classList.add("bg-red-500")
             
         }
     })

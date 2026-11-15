@@ -16,3 +16,15 @@ export const modal_delete = document.querySelector("#modal-delete")
 export const cancel_delete = document.querySelector("#cancel-delete")
 export const confirm_delete = document.querySelector("#confirm-delete")
 export const msg_dlt = document.querySelector("#delete-message");
+
+export const modal = document.querySelector("#modal");
+export const candidateName = document.querySelector("#candidateName");
+
+export const candidateForm = document.querySelector("#candidateForm");
+export const status = document.querySelector("#status");
+export const rating = document.querySelector("#rating");
+export const note = document.querySelector("#note");
+
+export const cancelBtn = document.querySelectorAll(".cancelBtn");
+export const saveBtn = document.querySelector(".btn_save");
+export const count = document.querySelector("#count");

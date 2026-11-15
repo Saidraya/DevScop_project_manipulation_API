@@ -1,4 +1,5 @@
 import { all_list, search, btns, modal_delete,cancel_delete, confirm_delete, msg_dlt, all} from "./dom.js";
+import {modal,candidateName,candidateForm,status,rating,note,cancelBtn,saveBtn, count} from "./dom.js";
 export async function response(link_url){
     try{
         const res = await fetch(link_url)
@@ -80,7 +81,26 @@ classe.forEach(function(btn){
 })
 }
 manipilation_color(btns)
-
+function cancel(clas, modal){
+  clas.forEach((e) =>{
+   e.onclick =  function(){
+    modal.classList.toggle("hidden")}
+ })
+}
+ cancel(cancelBtn,modal)
+ async function update_user(user) {
+    const body = { ...user };
+    delete body.language;     
+    const res = await fetch(`https://6af4a05b55a1de7dcf0452a7.mockapi.io/users/${user.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+    });
+    return await res.json();
+}
+function afficher_nombre() {
+    count.textContent = `${data.length} candidat(s) dans votre shortlist`;
+}
  function add_tolist(user, lang)
 {
 
@@ -98,20 +118,16 @@ card.innerHTML = `
                     <span class="rounded-md border border-cyan-500/60 bg-cyan-500/10 px-2 py-0.5 text-xs normal-case text-cyan-300">${lang}</span>
                 </p>
                 <p class="italic text-cyan-300">${user.note}</p>
-                <p class="text-sm text-slate-400">Ajouté le ${user.date}</p>
+                <p class="text-sm text-slate-400">Ajouté le ${user.add_date}</p>
             </div>
         </div>
         <div class="flex flex-wrap items-center gap-3">
-            <div class="flex gap-1 text-lime-400">
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
+            <div class="flex gap-1 text-lime-300 text-2xl">
+               ${"★".repeat(user.stars)}
             </div>
             <span class="flex items-center gap-2 rounded-lg border border-red-400 px-3 py-1.5 text-xs font-bold uppercase text-red-300">
                 <span class="h-2 w-2 rounded-full bg-red-400"></span>
-                Refusé
+                ${user.sitiation}
             </span>
             <button class="flex items-center gap-2 rounded-lg border border-cyan-500/60 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-300 cursor-pointer hover:bg-cyan-500/20 edit_btn">
                 <i class="fa-solid fa-pen"></i> Modifier
@@ -121,6 +137,27 @@ card.innerHTML = `
             </button>
         </div>
     </div>`
+ 
+    const edit = card.querySelector(".edit_btn")
+    edit.addEventListener("click", () => {
+        modal.classList.remove("hidden")
+        candidateName.textContent = user.login;
+        status.value = user.sitiation;
+        rating.value = user.stars;
+        note.value = user.note ?? ""; 
+        saveBtn.onclick = async (e) => {
+    e.preventDefault();  
+
+    user.sitiation = status.value;
+    user.stars = Number(rating.value);
+    user.note = note.value;
+
+    await update_user(user);
+    modal.classList.add("hidden");
+    afficher_tout();
+}
+    });
+
     all_list.append(card);
     const delet = card.querySelector(".delet_btn")
     delet.addEventListener("click", ()=>{
@@ -129,20 +166,40 @@ card.innerHTML = `
     })
 }
 
+let choice = "Tous";
+
+function afficher_tout() {
+    all_list.innerHTML = "";
+
+    for (const d of data) {
+        if (choice === "Tous" || d.sitiation === choice) {
+            add_tolist(d, d.language);
+        }
+    }
+}
+btns.forEach(function (b) {
+    b.addEventListener("click", function () {
+        choice = b.textContent.trim();
+        afficher_tout();
+    });
+});
+
+
     async function creat()
     {
-        let data = await get_users()
+         data = await get_users()
             if(cart && !data.some(user => user.login === cart.login))
                 {
                     await add_user(cart);
                 }
+                sessionStorage.removeItem("user");
                 data = await get_users()
 let lang = ""
         for (const user of data) {
             const repos = await response(`https://api.github.com/users/${user.login}/repos`);
               const repo = Array.isArray(repos)? repos.find(repo => repo.language !== null): undefined;
               user.language = repo?.language || "Unknown";
-            add_tolist(user, user.language);
+            
 
 search.addEventListener("input", function(){
     all_list.innerHTML = "";
@@ -155,5 +212,7 @@ search.addEventListener("input", function(){
             }
             })
     }
+    afficher_tout();
+    afficher_nombre()
     }
     creat()

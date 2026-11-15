@@ -24,7 +24,7 @@ function add(user_info){
 
         return
     }
-const bio = user_info.bio ?? "cyber security"
+const bio = user_info.bio ?? "aucun bio"
 const location = user_info.location ?? "Non renseigné"
 const date = new Date(user_info.created_at);
 const month = date.toLocaleString("fr-FR", { month: "long" });
@@ -74,6 +74,11 @@ all.innerHTML = `
         all.classList.remove("hidden");
         const ajout = all.querySelector(".btn_ajout")
         ajout.onclick = function(){
+            user_info.sitiation = "Nouveau"
+            user_info.note = "aucun note"
+            user_info.stars = 5;
+            user_info.note = "aucun note"
+            user_info.add_date = new Date().toLocaleDateString("fr-FR");
             sessionStorage.setItem("user", JSON.stringify(user_info));
 
         }
