@@ -1,27 +1,64 @@
-import { input_search,analysez, regex_nom, error_msg, search_for, Rchercher, all, all_repos, aucun } from "./dom.js";
+import { input_search,analysez, regex_nom, error_msg, search_for, Rchercher, all, all_repos, aucun, langs, recherch } from "./dom.js";
 const input_value = sessionStorage.getItem("username") || "";
-export async function response(link_url){
+search_for.value = input_value;
+export async function response(){
     try{
-        const res = await fetch(link_url)
-         if(!res.ok)
-        {  
-            return false
+    const [users, repos] =  await Promise.all([
+        fetch(`https://api.github.com/users/${search_for.value.trim()}`).then(res => { 
+            if(!res.ok)
+            {
+                throw new Error("poste error");
+            }
+            return res.json()}),
+        fetch(`https://api.github.com/users/${search_for.value.trim()}/repos`).then(res => {
+            if(!res.ok)
+            {
+                throw new Error("poste error");
+            }
+            return res.json()})
+    ])
+    users.time = new Date();
+    return {users, repos};
         }
-        const data = await res.json();      
-        return data;
-    }
     catch(error){
         console.error("error:", error)
-        return false
+        return false;
     }
 }
+ function set_localstorage_users_repos(user, key){
+    localStorage.setItem(key, JSON.stringify(user))
+}
+function get_localstorage_users_repos(key){
+    return JSON.parse(localStorage.getItem(key))
+}
+async function add_to_local(data)
+{
+    set_localstorage_users_repos(data, data.users.login);
+}
+
+function check(login){
+    const time_out = get_localstorage_users_repos(login)
+    const savetime = new Date(time_out.users.time).getTime();
+    const now = new Date();
+    if(now - savetime > 10 * 60 * 1000)
+    {
+        localStorage.removeItem(login)
+    }
+}
+function check_every_user_timeout(){
+    for(let i = localStorage.length - 1; i >= 0; i--)
+    {
+        const key = localStorage.key(i);
+        check(key)
+    }
+}
+ let repo = null;
 function add(user_info){
     all.classList.add("hidden")
      if(!user_info){
         all.classList.add("hidden")
         aucun.classList.remove("hidden")
         depos.classList.add("hidden")
-
         return
     }
 const bio = user_info.bio ?? "aucun bio"
@@ -82,29 +119,64 @@ all.innerHTML = `
             sessionStorage.setItem("user", JSON.stringify(user_info));
 
         }
+        
 }
-search_for.value = input_value;
+async function initiale(){
+   check_every_user_timeout()
+const info = get_localstorage_users_repos(search_for.value.trim());
 
 if (input_value) {
 
-    const user = await response(`https://api.github.com/users/${input_value}`)
-    add(user)
+    let data = null;
+    
+    if(info){
+
+        data = info
+    }
+    else{
+        data = await response();
+        if(data)
+        add_to_local(data);
+    }
+if(!data)
+{
+    add(false);
+    return
 }
+    const user = data.users
+    add(user)
+    
+
+}
+}
+function manipilation_color(classe) {
+classe.forEach(function(btn){
+
+    btn.addEventListener("click",function(){
+        classe.forEach(function(btn){
+          btn.classList.add("bg-slate-700");
+    btn.classList.remove("bg-green-500")
+        })
+        btn.classList.remove("bg-slate-700");
+        btn.classList.add("bg-green-500")
+    })
+})
+}
+manipilation_color(langs)
+
 const depos = document.createElement("div");
 const grid = document.createElement("div");
-
+initiale()
 grid.className = "grid grid-cols-2 md:grid-cols-2 gap-5 w-full";
 
 all_repos.append(depos, grid);
 function add_repos(data)
 {
     
-
 const now = new Date()
 const date = new Date(data.updated_at)
 const days = now - date;
 const last_update = Math.floor(days /(1000 * 60 * 60 * 24))
-
 let member = `mis á jour il y a${last_update} jours`;
 if (last_update === 0) {
     member = "Mis à jour aujourd'hui";
@@ -136,29 +208,89 @@ if (last_update === 0) {
             </p>
         </div>
     </div>`
-    
     grid.append(card)    
+   
 }Rchercher.addEventListener("click", async function(){
     grid.innerHTML = "";
-            const result = await response(`https://api.github.com/users/${search_for.value.trim()}`)
-            const result_repos  = await response(`https://api.github.com/users/${search_for.value.trim()}/repos`)
-            
+    let data = null;
+    check(search_for.value.trim());
+    if(get_localstorage_users_repos(search_for.value.trim())){
+        data = get_localstorage_users_repos(search_for.value.trim())
+    }
+    else{
+        data = await response();
+        if(data)
+            add_to_local(data)
+    }
+    if(!data)
+    {
+        add(false)
+        return
+    }
+    repo = data
+            const result = data.users;
+            const result_repos  = data.repos
             if (Array.isArray(result_repos)) {
                 depos.innerHTML = `<h1 class="text-3xl font-bold text-blue-500 mb-5">DEPOTS <span class="text-white">${result_repos.length}</span></h1>`;
-                const length = result_repos.length
+                const length = result_repos.length;
                 for (const repo of result_repos){
-                    add_repos(repo, length);
-                    
+                    add_repos(repo);
                 }
             }
             add(result)
         })
-        if (input_value){
- const user = await response(`https://api.github.com/users/${input_value}/repos`);
+     
+         
+    if(get_localstorage_users_repos(search_for.value.trim())){
+        repo = get_localstorage_users_repos(search_for.value.trim())
+    }
+    else{
+         repo  = await response()
+    }
+        let choice = "Tous";
+        function afich_felter_search(){
+            grid.innerHTML = "";
+            if (repo && Array.isArray(repo.repos)) {
+            for(const r of repo.repos){
+            if((choice === "Tous" || r.language?.toLowerCase() === choice.toLowerCase())  && r.name.toLowerCase().trim(). includes(recherch.value.toLowerCase().trim())){
+                add_repos(r);
+            }
+        }
+    }
+    else{
+        console.log("request api faild")
+    }
+    }
+    recherch.addEventListener("input" , afich_felter_search)
+    langs.forEach((e) =>{
+        e.addEventListener("click", () => {
+            choice = e.textContent.trim();
+            afich_felter_search()
+        })
+    })
+        async function need_data_to_print_repos()
+        {
+            if (search_for.value){
+           
+            let data = null;
+            if(get_localstorage_users_repos(search_for.value.trim())){
+                data = get_localstorage_users_repos(search_for.value.trim())
+            }
+            else{
+                data = await response();
+            }
+            if(!data)
+            {
+                depos.innerHTML = "Impossible de charger les dépôts";
+                return
+            }
+            const user =  data.repos
+        
     if (Array.isArray(user)) {
                 depos.innerHTML = `<h1 class="text-3xl font-bold text-blue-500 mb-5">DEPOTS <span class="text-white">${user.length}</span></h1>`;
                 for (const repo of user) {
                     add_repos(repo);
                 }
             }
-}
+}}
+need_data_to_print_repos()

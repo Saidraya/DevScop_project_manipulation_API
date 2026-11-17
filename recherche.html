@@ -29,6 +29,40 @@
      <div class="flex items-center rounded-md bg-gradient-to-r from-blue-400 via-blue-300 to-red-500/20 "><button class=" cursor-pinter p-2 cursor-pointer" id="Rechercher">Rechercher</button>
      </div>
     </div>
+     <div class="w-full flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="max-w-1/2 md:flex-1 min-w-0 border bg-slate-900 text-white rounded-lg p-3">
+        <ul class="flex flex-wrap items-center gap-4 md:gap-2 text-lg">
+            <li class="rounded px-3 py-1 whitespace-nowrap cursor-pointer btns langs"
+                data-filtre="tous_language " >
+                Tous
+            </li>
+            <li class="flex items-center gap-2 rounded px-3 py-1 whitespace-nowrap langs cursor-pointer btns"
+                data-filtre="avenir">
+                JavaScript
+            </li>
+            <li class="flex items-center gap-2 rounded px-3 py-1 whitespace-nowrap langs cursor-pointer btns"
+                data-filtre="entretien">
+                c++
+        </li>
+            <li class="flex items-center gap-2 rounded px-3 py-1 whitespace-nowrap langs cursor-pointer btns"
+                data-filtre="retenu">
+                python   
+            </li>
+            <li class="flex items-center gap-2 rounded px-3 py-1 whitespace-nowrap langs cursor-pointer btns"
+                data-filtre="refuse">
+                HTML
+        </li>
+        </ul>
+    </div>
+    <div class="w-full md:w-1/3 shrink-0">
+        <input
+            class="w-full px-4 py-3 text-white rounded-md bg-slate-800 outline-none focus:ring-2 focus:ring-blue-400"
+            type="text"
+            id="recherche"
+            placeholder="Rechercher un adversaire..."
+        >
+    </div>
+</div>
 <section class="flex flex-col lg:flex-row gap-6 lg:gap-10 p-2 md:p-6 items-start">
     <div class="all hidden w-full lg:w-auto lg:min-w-110 border border-slate-700 rounded-xl text-white p-5 bg-slate-900">
     </div>

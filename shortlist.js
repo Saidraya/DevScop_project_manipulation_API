@@ -25,7 +25,7 @@ let cart = JSON.parse(sessionStorage.getItem("user") || "null");
 async function get_users() {
     const response = await fetch("https://6af4a05b55a1de7dcf0452a7.mockapi.io/users")
     const data = await response.json();
-    return data
+    return data;
 }
 async function add_user(user) {
     const response = await fetch("https://6af4a05b55a1de7dcf0452a7.mockapi.io/users", {
@@ -39,11 +39,15 @@ async function add_user(user) {
     console.log(data);
 }
 let data = await get_users()
-function remove_user(user, cart) {
+function remove_user(user, cart, delet) {
   msg_dlt.textContent = "Voulez-vous supprimer cett match  ?";
   modal_delete.removeAttribute("hidden");
   cancel_delete.onclick = function(){
-  modal_delete.setAttribute("hidden", "");
+    modal_delete.setAttribute("hidden", "");
+     delet.removeAttribute("disabled", "" )
+     console.log(delet)
+        delet.classList.remove("disabled:opacity-50", "disabled:cursor-not-allowed")
+
      return;
   };
   confirm_delete.onclick =  async function(){
@@ -103,7 +107,6 @@ function afficher_nombre() {
 }
  function add_tolist(user, lang)
 {
-
 all_list
 const card = document.createElement("div");
 card.innerHTML = `
@@ -137,7 +140,6 @@ card.innerHTML = `
             </button>
         </div>
     </div>`
- 
     const edit = card.querySelector(".edit_btn")
     edit.addEventListener("click", () => {
         modal.classList.remove("hidden")
@@ -157,26 +159,27 @@ card.innerHTML = `
     afficher_tout();
 }
     });
-
     all_list.append(card);
     const delet = card.querySelector(".delet_btn")
     delet.addEventListener("click", ()=>{
-        remove_user(user, card);
+        console.log(delet)
+        delet.setAttribute("disabled", "" )
+        delet.classList.add("disabled:opacity-50", "disabled:cursor-not-allowed")
+        remove_user(user, card, delet);
 
     })
 }
-
-let choice = "Tous";
-
+let choice = "Tous"; 
 function afficher_tout() {
     all_list.innerHTML = "";
 
     for (const d of data) {
-        if (choice === "Tous" || d.sitiation === choice) {
+        if ((choice === "Tous" || d.sitiation === choice) && d.login.toLowerCase().includes(search.value.trim().toLowerCase())) {
             add_tolist(d, d.language);
         }
     }
 }
+search.addEventListener("input", afficher_tout);
 btns.forEach(function (b) {
     b.addEventListener("click", function () {
         choice = b.textContent.trim();
@@ -201,16 +204,6 @@ let lang = ""
               user.language = repo?.language || "Unknown";
             
 
-search.addEventListener("input", function(){
-    all_list.innerHTML = "";
-                for(const d of data)
-                {
-                if(d.login.toLowerCase().includes(search.value.trim().toLowerCase()))
-                {
-                    add_tolist(d, d.language);
-                }
-            }
-            })
     }
     afficher_tout();
     afficher_nombre()

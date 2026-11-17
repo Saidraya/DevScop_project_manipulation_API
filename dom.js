@@ -28,3 +28,6 @@ export const note = document.querySelector("#note");
 export const cancelBtn = document.querySelectorAll(".cancelBtn");
 export const saveBtn = document.querySelector(".btn_save");
 export const count = document.querySelector("#count");
+export const langs = document.querySelectorAll(".langs");
+export const recherch = document.querySelector("#recherche");
+
