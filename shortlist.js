@@ -1,5 +1,8 @@
 import { all_list, search, btns, modal_delete,cancel_delete, confirm_delete, msg_dlt, all} from "./dom.js";
 import {modal,candidateName,candidateForm,status,rating,note,cancelBtn,saveBtn, count} from "./dom.js";
+import {delet_from_mackapi , get_users , add_user, update_user } from "./api.js"
+
+
 export async function response(link_url){
     try{
         const res = await fetch(link_url)
@@ -15,29 +18,9 @@ export async function response(link_url){
         return false;
     }
 }
-async function delet_from_mackapi(id){
-    const res  = await fetch(`https://6af4a05b55a1de7dcf0452a7.mockapi.io/users/${id}`,{
-        method: "DELETE"
-    })
-    return await res.json();
-}
+
 let cart = JSON.parse(sessionStorage.getItem("user") || "null");
-async function get_users() {
-    const response = await fetch("https://6af4a05b55a1de7dcf0452a7.mockapi.io/users")
-    const data = await response.json();
-    return data;
-}
-async function add_user(user) {
-    const response = await fetch("https://6af4a05b55a1de7dcf0452a7.mockapi.io/users", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(user)
-    });
-    const data = await response.json();
-    console.log(data);
-}
+
 let data = await get_users()
 function remove_user(user, cart, delet) {
   msg_dlt.textContent = "Voulez-vous supprimer cett match  ?";
@@ -91,17 +74,11 @@ function cancel(clas, modal){
     modal.classList.toggle("hidden")}
  })
 }
+
  cancel(cancelBtn,modal)
- async function update_user(user) {
-    const body = { ...user };
-    delete body.language;     
-    const res = await fetch(`https://6af4a05b55a1de7dcf0452a7.mockapi.io/users/${user.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-    });
-    return await res.json();
-}
+
+ 
+
 function afficher_nombre() {
     count.textContent = `${data.length} candidat(s) dans votre shortlist`;
 }
@@ -142,11 +119,22 @@ card.innerHTML = `
     </div>`
     const edit = card.querySelector(".edit_btn")
     edit.addEventListener("click", () => {
+        cancelBtn.forEach((btn) => {
+    btn.addEventListener("click", () => {
+        edit.removeAttribute("disabled");
+        edit.classList.remove(
+            "disabled:opacity-50",
+            "disabled:cursor-not-allowed"
+        );
+    });
+});
+         edit.setAttribute("disabled", "" )
+        edit.classList.add("disabled:opacity-50", "disabled:cursor-not-allowed")
         modal.classList.remove("hidden")
         candidateName.textContent = user.login;
         status.value = user.sitiation;
         rating.value = user.stars;
-        note.value = user.note ?? ""; 
+        note.value = user.note ?? "";
         saveBtn.onclick = async (e) => {
     e.preventDefault();  
 
@@ -155,6 +143,8 @@ card.innerHTML = `
     user.note = note.value;
 
     await update_user(user);
+    edit.removeAttribute("disabled", "" )
+        edit.classList.remove("disabled:opacity-50", "disabled:cursor-not-allowed")
     modal.classList.add("hidden");
     afficher_tout();
 }

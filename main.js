@@ -16,5 +16,3 @@ analysez.addEventListener("click", function(){
             
         }
     })
-    
-    

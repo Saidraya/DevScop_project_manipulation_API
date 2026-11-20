@@ -1,36 +1,10 @@
 import { input_search,analysez, regex_nom, error_msg, search_for, Rchercher, all, all_repos, aucun, langs, recherch } from "./dom.js";
 const input_value = sessionStorage.getItem("username") || "";
+import {set_localstorage_users_repos, get_localstorage_users_repos} from "./config.js";
+import { response } from "./cache.js";
 search_for.value = input_value;
-export async function response(){
-    try{
-    const [users, repos] =  await Promise.all([
-        fetch(`https://api.github.com/users/${search_for.value.trim()}`).then(res => { 
-            if(!res.ok)
-            {
-                throw new Error("poste error");
-            }
-            return res.json()}),
-        fetch(`https://api.github.com/users/${search_for.value.trim()}/repos`).then(res => {
-            if(!res.ok)
-            {
-                throw new Error("poste error");
-            }
-            return res.json()})
-    ])
-    users.time = new Date();
-    return {users, repos};
-        }
-    catch(error){
-        console.error("error:", error)
-        return false;
-    }
-}
- function set_localstorage_users_repos(user, key){
-    localStorage.setItem(key, JSON.stringify(user))
-}
-function get_localstorage_users_repos(key){
-    return JSON.parse(localStorage.getItem(key))
-}
+
+
 async function add_to_local(data)
 {
     set_localstorage_users_repos(data, data.users.login);
@@ -38,8 +12,12 @@ async function add_to_local(data)
 
 function check(login){
     const time_out = get_localstorage_users_repos(login)
+    if (!time_out) {
+        return;
+    }
     const savetime = new Date(time_out.users.time).getTime();
     const now = new Date();
+     
     if(now - savetime > 10 * 60 * 1000)
     {
         localStorage.removeItem(login)
@@ -172,12 +150,15 @@ grid.className = "grid grid-cols-2 md:grid-cols-2 gap-5 w-full";
 all_repos.append(depos, grid);
 function add_repos(data)
 {
-    
+    if(!data.language)
+    {
+        data.language = "aucun"
+    }
 const now = new Date()
 const date = new Date(data.updated_at)
 const days = now - date;
 const last_update = Math.floor(days /(1000 * 60 * 60 * 24))
-let member = `mis á jour il y a${last_update} jours`;
+let member = `mis á jour il y a ${last_update} jours`;
 if (last_update === 0) {
     member = "Mis à jour aujourd'hui";
 }
